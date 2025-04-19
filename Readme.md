@@ -23,9 +23,8 @@ http://localhost:5000/api/auth/register
   - Crie o usuário com essa senha (ela já vai ser criptografada pelo `userSchema`).
   - Envie essa senha por e-mail para o usuário com `nodemailer`.
 
-## 🔁 3. Recuperar senha (Esqueceu a senha)
+## 🔁 3. Recuperar senha (Esqueceu a senha) ///////// muda isso
 
-- Gerar um token temporário e enviar por e-mail.
 - Criar uma rota `POST /recuperar-senha` que envia o e-mail com link.
 - Criar rota `POST /resetar-senha` que recebe nova senha e o token.
 
@@ -37,7 +36,7 @@ http://localhost:5000/api/auth/register
 ## 🛠️ 5. Modificar perfil
 
 - Rota protegida com JWT, `PUT /perfil`.
-- Campos possíveis: `nome`, `avatar`, `idade`, `email`, `peso`, `altura`.
+- Campos possíveis: `nome`, `idade`, `email`, `peso`, `altura`.
 - Verificar se o novo email já existe antes de salvar.
 
 ## 🏋️ 6. Adicionar treino
