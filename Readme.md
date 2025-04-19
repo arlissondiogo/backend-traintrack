@@ -5,39 +5,81 @@
     npm start
 ```
 
+## CRIE UM ARQUIVO .env E COLOQUE ISSO DENTRO: 
+
+MONGO_URI = SUA URI
+JWT_SECRET= SUA SENHA (PODE SER UMA EX: DIOGOLINDAO)
+PORT=5000
+
+
 ## Qual porta está? e qual rota usa?
 
+A PORTA É A 5000
+
 ```bash
-http://localhost:5000/api/auth/login
-http://localhost:5000/api/auth/register
+1- http://localhost:5000/api/auth/login
+2- http://localhost:5000/api/auth/register
+3- http://localhost:5000/api/auth/update/ID
+4- http://localhost:5000/api/auth/delete/ID
+5- http://localhost:5000/api/auth/forgot-password
+```
+
+## EXEMPLOS DE REQUISIÇÃO PARA AS ROTAS: 
+
+1-
+```
+{
+  "email": "joao@exemplo.com",
+  "senha": "eef1cebceadc"
+}
+```
+
+2-
+```
+{
+  "nome": "João Silva",
+  "email": "joao@exemplo.com",
+  "sexo": "masculino",
+  "peso": 75,
+  "altura": 1.80,
+  "idade": 28
+}
+
+```
+3-
+```
+{
+  "nome": "João Silva",
+  "email": "joao@exemplo.com",
+  "sexo": "masculino",
+  "peso": 75,
+  "altura": 1.80,
+  "idade": 28
+}
+
+```
+
+5-
+```
+{
+    "email":"joao@exemplo.com"
+    }
 ```
 
 # ✅ Funcionalidades + Back-end (API)
 
 ## 🔐 1. Login – Pronto!
 
-## 🧾 2. Registro com senha gerada automaticamente
+## 🧾 2. Registro com senha gerada automaticamente – Pronto!
 
-- Mudar o sistema para gerar uma senha aleatória e enviar ela por e-mail, em vez de receber do usuário.
-  - Gere uma senha aleatória.
-  - Crie o usuário com essa senha (ela já vai ser criptografada pelo `userSchema`).
-  - Envie essa senha por e-mail para o usuário com `nodemailer`.
-
-## 🔁 3. Recuperar senha (Esqueceu a senha) ///////// muda isso
-
-- Criar uma rota `POST /recuperar-senha` que envia o e-mail com link.
-- Criar rota `POST /resetar-senha` que recebe nova senha e o token.
+## 🔁 3. Recuperar senha (Esqueceu a senha) – Pronto!
 
 ## 📬 4. Suporte
 
 - Rota `POST /suporte` com nome, email e mensagem.
 - Enviar isso por e-mail para o administrador (usando `nodemailer` também).
 
-## 🛠️ 5. Modificar perfil
-
-- Rota protegida com JWT, `PUT /perfil`.
-- Campos possíveis: `nome`, `idade`, `email`, `peso`, `altura`.
-- Verificar se o novo email já existe antes de salvar.
+## 🛠️ 5. Modificar perfil – Pronto!
 
 ## 🏋️ 6. Adicionar treino
 
@@ -50,10 +92,7 @@ http://localhost:5000/api/auth/register
   - `tipo de treino` (checkbox: peito, perna, etc...)
 - 💡 O melhor aqui é salvar o treino em um model separado, e vincular ele ao usuário com `userId`.
 
-## 🗑️ 7. Deletar conta
-
-- Rota `DELETE /perfil`.
-- Deleta o usuário e os treinos associados (você pode usar `User.findByIdAndDelete` e depois `Treino.deleteMany({ usuario: id })`).
+## 🗑️ 7. Deletar conta – Pronto!
 
 ## 👀 8. Visualizar todos os treinos cadastrados
 
