@@ -30,6 +30,9 @@ exports.register = async (req, res) => {
       email,
       senha: senhaCriptografada,
       sexo,
+      peso: 0,
+      altura: 0,
+      idade: 0,
     });
 
     // Cria o token JWT com o id do usuário
@@ -46,6 +49,9 @@ exports.register = async (req, res) => {
         nome: user.nome,
         email: user.email,
         sexo: user.sexo,
+        peso: user.peso,
+        altura: user.altura,
+        idade: user.idade,
         senhaGerada, // Retorna a senha gerada para o cliente, caso necessário
       },
     });
@@ -168,3 +174,11 @@ exports.forgotPassword = async (req, res) => {
     res.status(500).json({ erro: "Erro ao alterar a senha." });
   }
 };
+
+exports.addWorkout = async (req, res) => {};
+
+exports.listWorkouts = async (req, res) => {};
+
+exports.deleteWorkout = async (req, res) => {};
+
+exports.updateWorkout = async (req, res) => {};

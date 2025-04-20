@@ -17,15 +17,15 @@ const UserSchema = new mongoose.Schema(
     },
     peso: {
       type: Number, // Certifique-se de que o tipo está correto
-      required: false,
+      default: 0,
     },
     altura: {
       type: Number, // Certifique-se de que o tipo está correto
-      required: false,
+      default: 0,
     },
     idade: {
       type: Number, // Certifique-se de que o tipo está correto
-      required: false,
+      default: 0,
     },
     senha: {
       type: String,
