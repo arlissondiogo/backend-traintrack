@@ -1,5 +1,11 @@
 # Como usar?
 
+Git clone:
+
+```bash
+https://github.com/arlissondiogo/backend-traintrack.git
+```
+
 ```bash
     npm i
     npm start
