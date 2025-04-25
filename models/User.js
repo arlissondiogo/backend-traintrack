@@ -11,10 +11,6 @@ const UserSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-    sexo: {
-      type: String,
-      required: true,
-    },
     peso: {
       type: Number, // Certifique-se de que o tipo está correto
       default: 0,

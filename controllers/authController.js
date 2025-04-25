@@ -10,7 +10,7 @@ function gerarSenhaAleatoria(tamanho = 12) {
 
 exports.register = async (req, res) => {
   try {
-    const { nome, email, sexo } = req.body;
+    const { nome, email } = req.body;
 
     // Verifica se o email já está cadastrado
     const userExistente = await User.findOne({ email });
@@ -29,7 +29,6 @@ exports.register = async (req, res) => {
       nome,
       email,
       senha: senhaCriptografada,
-      sexo,
       peso: 0,
       altura: 0,
       idade: 0,
@@ -48,7 +47,6 @@ exports.register = async (req, res) => {
         id: user._id,
         nome: user.nome,
         email: user.email,
-        sexo: user.sexo,
         peso: user.peso,
         altura: user.altura,
         idade: user.idade,
@@ -105,10 +103,10 @@ exports.deleteUser = async (req, res) => {
 exports.update = async (req, res) => {
   try {
     const { id } = req.params;
-    const { nome, email, sexo, peso, altura, idade, senha } = req.body;
+    const { nome, email, peso, altura, idade, senha } = req.body;
 
     // Prepara os dados de atualização
-    let updateData = { nome, email, sexo, peso, altura, idade };
+    let updateData = { nome, email, peso, altura, idade };
 
     // Verifica se a senha foi fornecida e criptografa se necessário
     if (senha) {
@@ -132,7 +130,6 @@ exports.update = async (req, res) => {
         _id: updatedUser._id,
         nome: updatedUser.nome,
         email: updatedUser.email,
-        sexo: updatedUser.sexo,
         peso: updatedUser.peso,
         altura: updatedUser.altura,
         idade: updatedUser.idade,

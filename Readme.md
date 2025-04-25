@@ -11,14 +11,13 @@ https://github.com/arlissondiogo/backend-traintrack.git
     npm start
 ```
 
-## CRIE UM ARQUIVO .env E COLOQUE ISSO DENTRO: 
+## CRIE UM ARQUIVO .env E COLOQUE ISSO DENTRO:
 
 MONGO_URI = SUA URI
 
 JWT_SECRET= SUA SENHA (PODE SER UMA EX: DIOGOLINDAO)
 
 PORT=5000
-
 
 ## Qual porta está? e qual rota usa?
 
@@ -27,14 +26,15 @@ A PORTA É A 5000
 ```bash
 1- http://localhost:5000/api/auth/login
 2- http://localhost:5000/api/auth/register
-3- http://localhost:5000/api/auth/update/ID
-4- http://localhost:5000/api/auth/delete/ID
+3- http://localhost:5000/api/auth/updateUser/ID
+4- http://localhost:5000/api/auth/deleteUser/ID
 5- http://localhost:5000/api/auth/forgot-password
 ```
 
-## EXEMPLOS DE REQUISIÇÃO PARA AS ROTAS: 
+## EXEMPLOS DE REQUISIÇÃO PARA AS ROTAS:
 
 1-
+
 ```
 {
   "email": "joao@exemplo.com",
@@ -43,23 +43,24 @@ A PORTA É A 5000
 ```
 
 2-
+
 ```
 {
   "nome": "João Silva",
   "email": "joao@exemplo.com",
-  "sexo": "masculino",
   "peso": 75,
   "altura": 1.80,
   "idade": 28
 }
 
 ```
+
 3-
+
 ```
 {
   "nome": "João Silva",
   "email": "joao@exemplo.com",
-  "sexo": "masculino",
   "peso": 75,
   "altura": 1.80,
   "idade": 28
@@ -68,6 +69,7 @@ A PORTA É A 5000
 ```
 
 5-
+
 ```
 {
     "email":"joao@exemplo.com"
@@ -82,14 +84,9 @@ A PORTA É A 5000
 
 ## 🔁 3. Recuperar senha (Esqueceu a senha) – Pronto!
 
-## 📬 4. Suporte
+## 🛠️ 4. Modificar perfil – Pronto!
 
-- Rota `POST /suporte` com nome, email e mensagem.
-- Enviar isso por e-mail para o administrador (usando `nodemailer` também).
-
-## 🛠️ 5. Modificar perfil – Pronto!
-
-## 🏋️ 6. Adicionar treino
+## 🏋️ 5. Adicionar treino
 
 - Rota `POST /treinos`.
   - `nome do exercício`
