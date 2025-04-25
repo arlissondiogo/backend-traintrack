@@ -1,4 +1,5 @@
 const express = require("express");
+const authenticate = require("../middleware/authMiddleware"); // Importando o middleware de autenticação
 const router = express.Router();
 const {
   register,
@@ -18,9 +19,11 @@ router.post("/login", login);
 router.delete("/deleteUser/:id", deleteUser);
 router.put("/updateUser/:id", updateUser);
 router.post("/forgot-password", forgotPassword);
-router.post("/add-workout", addWorkout);
-router.get("/list-workouts", listWorkouts);
-router.delete("/delete-workout/:id", deleteWorkout);
-router.put("/update-workout/:id", updateWorkout);
+
+// Rotas para treinos
+router.post("/add-workout", authenticate, addWorkout);
+router.get("/list-workouts", authenticate, listWorkouts);
+router.delete("/delete-workout/:id", authenticate, deleteWorkout);
+router.put("/update-workout/:id", authenticate, updateWorkout);
 
 module.exports = router;
