@@ -22,21 +22,21 @@ const workoutSchema = new mongoose.Schema(
     carga: {
       type: Number,
       required: false,
-      min: [0, "Carga não pode ser negativa"], // Validação de carga
+      min: [0, "Carga não pode ser negativa"],
     },
     tempoDescanso: {
       type: Number,
       required: false,
-      min: [0, "Tempo de descanso não pode ser negativo"], // Validação de tempo de descanso
+      min: [0, "Tempo de descanso não pode ser negativo"],
     },
     tempoExecucao: {
       type: Number,
       required: false,
-      min: [0, "Tempo de execução não pode ser negativo"], // Validação de tempo de execução
+      min: [0, "Tempo de execução não pode ser negativo"],
     },
   },
   {
-    timestamps: true, // Garante a criação dos campos createdAt e updatedAt
+    timestamps: true,
   }
 );
 

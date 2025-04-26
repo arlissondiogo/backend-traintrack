@@ -10,18 +10,18 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
-      match: [/\S+@\S+\.\S+/, "Por favor, insira um email válido"], // Validação do formato do email
+      match: [/\S+@\S+\.\S+/, "Por favor, insira um email válido"],
     },
     peso: {
-      type: Number, // Certifique-se de que o tipo está correto
+      type: Number,
       default: 0,
     },
     altura: {
-      type: Number, // Certifique-se de que o tipo está correto
+      type: Number,
       default: 0,
     },
     idade: {
-      type: Number, // Certifique-se de que o tipo está correto
+      type: Number,
       default: 0,
     },
     senha: {

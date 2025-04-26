@@ -1,10 +1,9 @@
 const User = require("../models/User");
-const Workout = require("../models/Workout"); // Importa o modelo de treino
+const Workout = require("../models/Workout");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const crypto = require("crypto"); // Biblioteca para gerar senha aleatória
+const crypto = require("crypto");
 
-// Função para gerar uma senha aleatória
 function gerarSenhaAleatoria(tamanho = 12) {
   return crypto.randomBytes(tamanho).toString("hex").slice(0, tamanho);
 }
@@ -13,19 +12,15 @@ exports.register = async (req, res) => {
   try {
     const { nome, email } = req.body;
 
-    // Verifica se o email já está cadastrado
     const userExistente = await User.findOne({ email });
     if (userExistente) {
       return res.status(400).json({ erro: "Email já cadastrado." });
     }
 
-    // Gera uma senha aleatória para o usuário
     const senhaGerada = gerarSenhaAleatoria();
 
-    // Cria a senha criptografada
     const senhaCriptografada = await bcrypt.hash(senhaGerada, 10);
 
-    // Cria o novo usuário
     const user = await User.create({
       nome,
       email,
@@ -35,12 +30,10 @@ exports.register = async (req, res) => {
       idade: 0,
     });
 
-    // Cria o token JWT com o id do usuário
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
 
-    // Aqui você pode adicionar um processo de envio de e-mail com a senha ou retornar diretamente
     res.status(200).json({
       mensagem: "Usuário registrado com sucesso.",
       token,
@@ -51,7 +44,7 @@ exports.register = async (req, res) => {
         peso: user.peso,
         altura: user.altura,
         idade: user.idade,
-        senhaGerada, // Retorna a senha gerada para o cliente, caso necessário
+        senhaGerada,
       },
     });
   } catch (error) {
@@ -68,7 +61,6 @@ exports.login = async (req, res) => {
       return res.status(400).json({ erro: "Usuário não encontrado." });
     }
 
-    // Verifica a senha fornecida
     const senhaCorreta = await bcrypt.compare(senha, user.senha);
     if (!senhaCorreta) {
       return res.status(400).json({ erro: "Senha incorreta." });
@@ -106,16 +98,13 @@ exports.updateUser = async (req, res) => {
     const { id } = req.params;
     const { nome, email, peso, altura, idade, senha } = req.body;
 
-    // Prepara os dados de atualização
     let updateData = { nome, email, peso, altura, idade };
 
-    // Verifica se a senha foi fornecida e criptografa se necessário
     if (senha) {
       const senhaCriptografada = await bcrypt.hash(senha, 10);
       updateData.senha = senhaCriptografada;
     }
 
-    // Atualiza o usuário no banco
     const updatedUser = await User.findByIdAndUpdate(id, updateData, {
       new: true,
     });
@@ -124,7 +113,6 @@ exports.updateUser = async (req, res) => {
       return res.status(404).json({ erro: "Usuário não encontrado." });
     }
 
-    // Retorna a resposta com os dados atualizados (sem incluir a senha)
     res.status(200).json({
       mensagem: "Usuário atualizado com sucesso.",
       usuario: {
@@ -142,7 +130,6 @@ exports.updateUser = async (req, res) => {
   }
 };
 
-// Alterar senha (Esqueci minha senha)
 exports.forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
@@ -152,27 +139,22 @@ exports.forgotPassword = async (req, res) => {
       return res.status(400).json({ erro: "Usuário não encontrado." });
     }
 
-    // Gera uma nova senha aleatória
     const novaSenha = gerarSenhaAleatoria();
 
-    // Criptografa a nova senha
     const novaSenhaCriptografada = await bcrypt.hash(novaSenha, 10);
 
-    // Atualiza a senha no banco de dados
     user.senha = novaSenhaCriptografada;
     await user.save();
 
-    // Aqui você pode adicionar um processo de envio de e-mail com a nova senha, como o Nodemailer
-    // Por enquanto, vamos apenas retornar a nova senha para o cliente
     res.status(200).json({
       mensagem: "Senha alterada com sucesso.",
-      novaSenha, // Retorna a nova senha gerada (no ambiente real, você enviaria por e-mail)
+      novaSenha,
     });
   } catch (error) {
     res.status(500).json({ erro: "Erro ao alterar a senha." });
   }
 };
-// Função para adicionar um treino
+
 exports.addWorkout = async (req, res) => {
   try {
     const {
@@ -183,8 +165,7 @@ exports.addWorkout = async (req, res) => {
       tempoDescanso,
       tempoExecucao,
     } = req.body;
-    const userId = req.userId; // O userId agora está disponível através do middleware de autenticação
-
+    const userId = req.userId;
     const novoTreino = new Workout({
       user: userId,
       nomeExercicio,
@@ -206,10 +187,9 @@ exports.addWorkout = async (req, res) => {
   }
 };
 
-// Função para listar todos os treinos de um usuário
 exports.listWorkouts = async (req, res) => {
   try {
-    const userId = req.userId; // O userId agora está disponível através do middleware de autenticação
+    const userId = req.userId;
 
     const treinos = await Workout.find({ user: userId });
     res.status(200).json({ treinos });
@@ -218,7 +198,6 @@ exports.listWorkouts = async (req, res) => {
   }
 };
 
-// Função para deletar um treino
 exports.deleteWorkout = async (req, res) => {
   try {
     const { id } = req.params;
@@ -228,7 +207,6 @@ exports.deleteWorkout = async (req, res) => {
       return res.status(404).json({ erro: "Treino não encontrado." });
     }
 
-    // Verifique se o treino pertence ao usuário autenticado
     if (treino.user.toString() !== req.userId) {
       return res
         .status(403)
@@ -242,7 +220,6 @@ exports.deleteWorkout = async (req, res) => {
   }
 };
 
-// Função para atualizar um treino
 exports.updateWorkout = async (req, res) => {
   try {
     const { id } = req.params;
@@ -260,7 +237,6 @@ exports.updateWorkout = async (req, res) => {
       return res.status(404).json({ erro: "Treino não encontrado." });
     }
 
-    // Verifique se o treino pertence ao usuário autenticado
     if (treino.user.toString() !== req.userId) {
       return res
         .status(403)
