@@ -60,10 +60,7 @@ Você recebe esse token ao fazer login ou registrar.
 ```
 {
   "nome": "João Silva",
-  "email": "joao@exemplo.com",
-  "peso": 75,
-  "altura": 1.80,
-  "idade": 28
+  "email": "joao@exemplo.com"
 }
 
 ```
@@ -120,7 +117,7 @@ Authorization: Bearer SEU_TOKEN
 8- Deletar Treino
 
 ```
-DELETE /api/auth/delete-workout/:id
+DELETE /api/auth/delete-workout/id
 
 Headers:
 Authorization: Bearer SEU_TOKEN
@@ -130,7 +127,7 @@ Authorization: Bearer SEU_TOKEN
 9- updateWorkout
 
 ```
-PUT /api/auth/update-workout/:id
+PUT /api/auth/update-workout/id
 
 Headers:
 Authorization: Bearer SEU_TOKEN

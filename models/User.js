@@ -15,14 +15,17 @@ const UserSchema = new mongoose.Schema(
     peso: {
       type: Number,
       default: 0,
+      min: [0, "Peso não pode ser negativo"],
     },
     altura: {
       type: Number,
       default: 0,
+      min: [0, "Altura não pode ser negativo"],
     },
     idade: {
       type: Number,
       default: 0,
+      min: [0, "Idade não pode ser negativo"],
     },
     senha: {
       type: String,
@@ -31,5 +34,21 @@ const UserSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+// Adicionando validação automática nos updates
+UserSchema.pre("findOneAndUpdate", function (next) {
+  this.setOptions({ runValidators: true });
+  next();
+});
+
+UserSchema.pre("updateOne", function (next) {
+  this.setOptions({ runValidators: true });
+  next();
+});
+
+UserSchema.pre("updateMany", function (next) {
+  this.setOptions({ runValidators: true });
+  next();
+});
 
 module.exports = mongoose.model("User", UserSchema);

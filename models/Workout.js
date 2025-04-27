@@ -14,10 +14,12 @@ const workoutSchema = new mongoose.Schema(
     series: {
       type: Number,
       required: true,
+      min: [0, "Séries não pode ser negativa"],
     },
     repeticoes: {
       type: Number,
       required: true,
+      min: [0, "Repetições não podem ser negativa"],
     },
     carga: {
       type: Number,
@@ -37,6 +39,7 @@ const workoutSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    runValidators: true,
   }
 );
 
