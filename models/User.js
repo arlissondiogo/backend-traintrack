@@ -31,21 +31,26 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+
+    // 🔽 Campos novos
+    resetToken: {
+      type: String,
+    },
+    tokenExpiration: {
+      type: Date,
+    },
   },
   { timestamps: true }
 );
 
-// Adicionando validação automática nos updates
 UserSchema.pre("findOneAndUpdate", function (next) {
   this.setOptions({ runValidators: true });
   next();
 });
-
 UserSchema.pre("updateOne", function (next) {
   this.setOptions({ runValidators: true });
   next();
 });
-
 UserSchema.pre("updateMany", function (next) {
   this.setOptions({ runValidators: true });
   next();

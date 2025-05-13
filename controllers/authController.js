@@ -3,6 +3,7 @@ const Workout = require("../models/Workout");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
+const sendEmail = require("../utils/sendEmail");
 
 function gerarSenhaAleatoria(tamanho = 12) {
   return crypto.randomBytes(tamanho).toString("hex").slice(0, tamanho);
@@ -29,14 +30,8 @@ exports.register = async (req, res) => {
       altura: 0,
       idade: 0,
     });
-
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "1d",
-    });
-
     res.status(200).json({
       mensagem: "Usuário registrado com sucesso.",
-      token,
       usuario: {
         id: user._id,
         nome: user.nome,
@@ -133,25 +128,57 @@ exports.updateUser = async (req, res) => {
 exports.forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
-
     const user = await User.findOne({ email });
+
     if (!user) {
       return res.status(400).json({ erro: "Usuário não encontrado." });
     }
 
-    const novaSenha = gerarSenhaAleatoria();
+    const token = crypto.randomBytes(32).toString("hex");
+    const tokenExpiration = Date.now() + 3600000; // 1 hora
 
-    const novaSenhaCriptografada = await bcrypt.hash(novaSenha, 10);
-
-    user.senha = novaSenhaCriptografada;
+    user.resetToken = token;
+    user.tokenExpiration = tokenExpiration;
     await user.save();
 
-    res.status(200).json({
-      mensagem: "Senha alterada com sucesso.",
-      novaSenha,
-    });
+    const resetLink = `https://traintrack.com/reset-password?token=${token}`; //url do frontend precisa ser alterada
+
+    await sendEmail(
+      user.email,
+      "Reset de Senha",
+      `Clique no link: ${resetLink}`
+    );
+
+    res.status(200).json({ mensagem: "E-mail de recuperação enviado." });
   } catch (error) {
-    res.status(500).json({ erro: "Erro ao alterar a senha." });
+    res.status(500).json({ erro: "Erro ao processar o pedido." });
+  }
+};
+
+exports.resetPassword = async (req, res) => {
+  try {
+    const { token, novaSenha } = req.body;
+
+    const user = await User.findOne({
+      resetToken: token,
+      tokenExpiration: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.status(400).json({ erro: "Token inválido ou expirado." });
+    }
+
+    const senhaCriptografada = await bcrypt.hash(novaSenha, 10);
+    user.senha = senhaCriptografada;
+
+    user.resetToken = undefined;
+    user.tokenExpiration = undefined;
+
+    await user.save();
+
+    res.status(200).json({ mensagem: "Senha atualizada com sucesso." });
+  } catch (error) {
+    res.status(500).json({ erro: "Erro ao atualizar a senha." });
   }
 };
 

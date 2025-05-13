@@ -143,13 +143,19 @@ Authorization: Bearer SEU_TOKEN
 
 ```
 
-| Nº  | Funcionalidade                 | Status |
-| --- | ------------------------------ | ------ |
-| 1   | 🔐 Login                       | Pronto |
-| 2   | 🧾 Registro com senha gerada   | Pronto |
-| 3   | 🔁 Recuperar senha             | Pronto |
-| 4   | 🛠️ Modificar perfil            | Pronto |
-| 5   | 🏋️ Adicionar treino            | Pronto |
-| 6   | 👀 Visualizar todos os treinos | Pronto |
-| 7   | 🗑️ Deletar treino específico   | Pronto |
-| 8   | 🗑️ Deletar conta               | Pronto |
+| Nº  | Funcionalidade                      | Status |
+| --- | ----------------------------------- | ------ |
+| 1   | 🔐 Login                            | Pronto |
+| 2   | 🧾 Registro com senha gerada        | Pronto |
+| 3   | 🔁 Recuperar senha + envio de email | Pronto |
+| 4   | 🛠️ Modificar perfil                 | Pronto |
+| 5   | 🏋️ Adicionar treino                 | Pronto |
+| 6   | 👀 Visualizar todos os treinos      | Pronto |
+| 7   | 🗑️ Deletar treino específico        | Pronto |
+| 8   | 🗑️ Deletar conta                    | Pronto |
+
+| Nº  | Funcionalidade de manipulação de dados               | Status |
+| --- | ---------------------------------------------------- | ------ |
+| 1   | 📊 Gerar dados de progressão de carga                | Pronto |
+| 2   | 📦 Calcular volume do treino (séries x reps x carga) | Pronto |
+| 3   | 📈 Retornar histórico ordenado por data              | Pronto |
