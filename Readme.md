@@ -19,6 +19,10 @@ JWT_SECRET= SUA SENHA (PODE SER UMA EX: DIOGOLINDAO)
 
 PORT=5000
 
+EMAIL_USER=seuemail@gmail.com
+
+EMAIL_PASS=sua senha do nodemailer
+
 ## Qual porta está? e qual rota usa?
 
 A PORTA É A 5000
