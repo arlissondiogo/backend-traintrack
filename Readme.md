@@ -28,15 +28,15 @@ EMAIL_PASS=sua senha do nodemailer
 A PORTA É A 5000
 
 ```bash
-1- http://localhost:5000/api/auth/login
-2- http://localhost:5000/api/auth/register
-3- http://localhost:5000/api/auth/updateUser/ID
-4- http://localhost:5000/api/auth/deleteUser/ID
-5- http://localhost:5000/api/auth/forgot-password
-6- http://localhost:5000/api/auth/add-workout
-7- http://localhost:5000/api/auth/list-workouts
-8- http://localhost:5000/api/auth/delete-workout/:id
-9- http://localhost:5000/api/auth/update-workout/:id
+1- http://localhost:5000/api/user/login
+2- http://localhost:5000/api/user/register
+3- http://localhost:5000/api/user/updateUser/ID
+4- http://localhost:5000/api/user/deleteUser/ID
+5- http://localhost:5000/api/user/forgot-password
+6- http://localhost:5000/api/workout/add-workout
+7- http://localhost:5000/api/workout/list-workouts
+8- http://localhost:5000/api/workout/delete-workout/:id
+9- http://localhost:5000/api/workout/update-workout/:id
 ```
 
 ## 🔐 IMPORTANTE: Para as rotas de treino (6 a 9), você precisa enviar o token JWT no cabeçalho da requisição:
@@ -93,7 +93,7 @@ Você recebe esse token ao fazer login ou registrar.
 6- addWorkout
 
 ```
-POST /api/auth/add-workout
+POST /api/workout/add-workout
 
 Headers:
 Authorization: Bearer SEU_TOKEN
@@ -112,7 +112,7 @@ Authorization: Bearer SEU_TOKEN
 7 - Listar Treinos
 
 ```
-GET /api/auth/list-workouts
+GET /api/workout/list-workouts
 
 Headers:
 Authorization: Bearer SEU_TOKEN
@@ -121,7 +121,7 @@ Authorization: Bearer SEU_TOKEN
 8- Deletar Treino
 
 ```
-DELETE /api/auth/delete-workout/id
+DELETE /api/workout/delete-workout/id
 
 Headers:
 Authorization: Bearer SEU_TOKEN
@@ -131,7 +131,7 @@ Authorization: Bearer SEU_TOKEN
 9- updateWorkout
 
 ```
-PUT /api/auth/update-workout/id
+PUT /api/workout/update-workout/id
 
 Headers:
 Authorization: Bearer SEU_TOKEN
