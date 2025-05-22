@@ -4,22 +4,16 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const sendEmail = require("../utils/sendEmail");
 
-function gerarSenhaAleatoria(tamanho = 12) {
-  return crypto.randomBytes(tamanho).toString("hex").slice(0, tamanho);
-}
-
 exports.register = async (req, res) => {
   try {
-    const { nome, email } = req.body;
+    const { nome, email, senha } = req.body;
 
     const userExistente = await User.findOne({ email });
     if (userExistente) {
       return res.status(400).json({ erro: "Email já cadastrado." });
     }
 
-    const senhaGerada = gerarSenhaAleatoria();
-
-    const senhaCriptografada = await bcrypt.hash(senhaGerada, 10);
+    const senhaCriptografada = await bcrypt.hash(senha, 10);
 
     const user = await User.create({
       nome,
@@ -29,6 +23,7 @@ exports.register = async (req, res) => {
       altura: 0,
       idade: 0,
     });
+
     res.status(200).json({
       mensagem: "Usuário registrado com sucesso.",
       usuario: {
@@ -38,10 +33,11 @@ exports.register = async (req, res) => {
         peso: user.peso,
         altura: user.altura,
         idade: user.idade,
-        senhaGerada,
+        senha,
       },
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ erro: "Erro no registro." });
   }
 };
