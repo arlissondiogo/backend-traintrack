@@ -136,12 +136,14 @@ exports.forgotPassword = async (req, res) => {
     user.tokenExpiration = tokenExpiration;
     await user.save();
 
-    const resetLink = `https://traintrack.com/reset-password?token=${token}`; //url do frontend precisa ser alterada
+    const resetLink = `http://localhost:5173/reset-password?token=${token}`;
 
     await sendEmail(
       user.email,
       "Reset de Senha",
-      `Clique no link: ${resetLink}`
+      `Olá ${user.nome},\n\n` +
+        `Você solicitou a redefinição de sua senha. Se não foi você, ignore este e-mail.\n\n` +
+        `Clique no link para redefinir sua senha: ${resetLink}`
     );
 
     res.status(200).json({ mensagem: "E-mail de recuperação enviado." });
