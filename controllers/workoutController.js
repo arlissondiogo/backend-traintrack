@@ -34,12 +34,16 @@ exports.addWorkout = async (req, res) => {
 
 exports.listWorkouts = async (req, res) => {
   try {
-    const userId = req.userId;
+    const limit = parseInt(req.query.limit) || 5;
 
-    const treinos = await Workout.find({ user: userId });
-    res.status(200).json({ treinos });
+    const workouts = await Workout.find({ user: req.userId }) // << pegar treinos só do usuário logado
+      .sort({ createdAt: -1 })
+      .limit(limit);
+
+    res.status(200).json(workouts);
   } catch (error) {
-    res.status(500).json({ erro: "Erro ao listar treinos." });
+    console.error(error);
+    res.status(500).json({ erro: "Erro ao buscar treinos." });
   }
 };
 
@@ -102,5 +106,17 @@ exports.updateWorkout = async (req, res) => {
       .json({ mensagem: "Treino atualizado com sucesso.", treino });
   } catch (error) {
     res.status(500).json({ erro: "Erro ao atualizar treino." });
+  }
+};
+
+exports.getExerciciosUnicos = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const exercicios = await Workout.distinct("nomeExercicio", {
+      user: userId,
+    });
+    res.json(exercicios);
+  } catch (error) {
+    res.status(500).json({ erro: "Erro ao buscar exercícios." });
   }
 };
