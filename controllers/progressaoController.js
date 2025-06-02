@@ -1,38 +1,75 @@
 const Workout = require("../models/Workout");
 const mongoose = require("mongoose");
 
-// 1. Frequência de treinos por semana
-const getFrequenciaTreino = async (req, res) => {
+const getProgressoCarga = async (req, res) => {
   try {
     const userId = req.userId;
+    const { exercicio, mes } = req.query;
 
-    const frequencia = await Workout.aggregate([
-      { $match: { user: new mongoose.Types.ObjectId(userId) } },
+    const matchStage = {
+      user: new mongoose.Types.ObjectId(userId),
+    };
+
+    if (exercicio && exercicio !== "Todos") {
+      matchStage.nomeExercicio = exercicio;
+    }
+
+    if (mes && mes !== "Todos") {
+      matchStage["$expr"] = {
+        $eq: [{ $month: "$createdAt" }, parseInt(mes)],
+      };
+    }
+
+    console.log("Match stage para progresso:", matchStage);
+
+    const progresso = await Workout.aggregate([
+      { $match: matchStage },
       {
         $group: {
           _id: {
+            nomeExercicio: "$nomeExercicio",
             year: { $year: "$createdAt" },
             week: { $isoWeek: "$createdAt" },
           },
-          totalTreinos: { $sum: 1 },
+          cargaMedia: { $avg: "$carga" },
+          cargaMaxima: { $max: "$carga" },
+          count: { $sum: 1 },
         },
       },
-      { $sort: { "_id.year": 1, "_id.week": 1 } },
+      { $sort: { "_id.nomeExercicio": 1, "_id.year": 1, "_id.week": 1 } },
     ]);
 
-    res.json(frequencia);
+    console.log("Resultado progresso:", progresso);
+    res.json(progresso);
   } catch (err) {
-    res.status(500).json({ error: "Erro ao calcular frequência" });
+    console.error("Erro ao calcular progresso de carga:", err);
+    res.status(500).json({ error: "Erro ao calcular progresso de carga" });
   }
 };
 
-// 2. Volume total por dia
 const getVolumeTotal = async (req, res) => {
   try {
     const userId = req.userId;
+    const { exercicio, mes } = req.query;
+
+    const matchStage = {
+      user: new mongoose.Types.ObjectId(userId),
+    };
+
+    if (exercicio && exercicio !== "Todos") {
+      matchStage.nomeExercicio = exercicio;
+    }
+
+    if (mes && mes !== "Todos") {
+      matchStage["$expr"] = {
+        $eq: [{ $month: "$createdAt" }, parseInt(mes)],
+      };
+    }
+
+    console.log("Match stage para volume:", matchStage);
 
     const volume = await Workout.aggregate([
-      { $match: { user: new mongoose.Types.ObjectId(userId) } },
+      { $match: matchStage },
       {
         $addFields: {
           volume: {
@@ -52,135 +89,51 @@ const getVolumeTotal = async (req, res) => {
             day: { $dayOfMonth: "$createdAt" },
           },
           volumeTotal: { $sum: "$volume" },
+          exercicios: { $addToSet: "$nomeExercicio" },
+          count: { $sum: 1 },
         },
       },
       { $sort: { "_id.year": 1, "_id.month": 1, "_id.day": 1 } },
     ]);
 
+    console.log("Resultado volume:", volume);
     res.json(volume);
   } catch (err) {
-    console.error("Erro real:", err);
+    console.error("Erro ao calcular volume total:", err);
     res.status(500).json({ error: "Erro ao calcular volume total" });
   }
 };
 
-// 3. Progresso de carga por exercício ao longo do tempo
-const getProgressoCarga = async (req, res) => {
+const getExerciciosUnicos = async (req, res) => {
   try {
     const userId = req.userId;
 
-    const progresso = await Workout.aggregate([
-      { $match: { user: new mongoose.Types.ObjectId(userId) } },
-      {
-        $group: {
-          _id: {
-            nomeExercicio: "$nomeExercicio",
-            year: { $year: "$createdAt" },
-            week: { $isoWeek: "$createdAt" },
-          },
-          cargaMedia: { $avg: "$carga" },
-          cargaMaxima: { $max: "$carga" },
-        },
-      },
-      { $sort: { "_id.nomeExercicio": 1, "_id.year": 1, "_id.week": 1 } },
-    ]);
-
-    res.json(progresso);
-  } catch (err) {
-    res.status(500).json({ error: "Erro ao calcular progresso de carga" });
-  }
-};
-
-// 4. Tempo total de treino por dia
-const getTempoTotal = async (req, res) => {
-  try {
-    const userId = req.userId;
-
-    const tempo = await Workout.aggregate([
-      { $match: { user: new mongoose.Types.ObjectId(userId) } },
-      {
-        $addFields: {
-          tempoTotal: {
-            $add: [
-              { $ifNull: ["$tempoExecucao", 0] },
-              { $ifNull: ["$tempoDescanso", 0] },
-            ],
-          },
-        },
-      },
-      {
-        $group: {
-          _id: {
-            year: { $year: "$createdAt" },
-            month: { $month: "$createdAt" },
-            day: { $dayOfMonth: "$createdAt" },
-          },
-          tempoTotal: { $sum: "$tempoTotal" },
-        },
-      },
-      { $sort: { "_id.year": 1, "_id.month": 1, "_id.day": 1 } },
-    ]);
-
-    res.json(tempo);
-  } catch (err) {
-    res.status(500).json({ error: "Erro ao calcular tempo total" });
-  }
-};
-
-// 5. Distribuição por tipo de exercício
-const getDistribuicaoExercicios = async (req, res) => {
-  try {
-    const userId = req.userId;
-
-    const distribuicao = await Workout.aggregate([
+    const exercicios = await Workout.aggregate([
       { $match: { user: new mongoose.Types.ObjectId(userId) } },
       {
         $group: {
           _id: "$nomeExercicio",
-          total: { $sum: 1 },
+          count: { $sum: 1 },
+          ultimoTreino: { $max: "$createdAt" },
         },
       },
-      { $sort: { total: -1 } },
+      { $sort: { ultimoTreino: -1 } },
     ]);
 
-    res.json(distribuicao);
+    const exerciciosUnicos = exercicios
+      .map((item) => item._id)
+      .filter((nome) => nome && nome.trim() !== "");
+
+    console.log("Exercícios únicos encontrados:", exerciciosUnicos);
+    res.json(exerciciosUnicos);
   } catch (err) {
-    res
-      .status(500)
-      .json({ error: "Erro ao calcular distribuição de exercícios" });
-  }
-};
-
-// 6. Comparativo entre exercícios (média de carga)
-const getComparativoExercicios = async (req, res) => {
-  try {
-    const userId = req.userId;
-
-    const comparativo = await Workout.aggregate([
-      { $match: { user: new mongoose.Types.ObjectId(userId) } },
-      {
-        $group: {
-          _id: "$nomeExercicio",
-          cargaMedia: { $avg: "$carga" },
-          cargaMaxima: { $max: "$carga" },
-        },
-      },
-      { $sort: { cargaMedia: -1 } },
-    ]);
-
-    res.json(comparativo);
-  } catch (err) {
-    res
-      .status(500)
-      .json({ error: "Erro ao calcular comparativo de exercícios" });
+    console.error("Erro ao buscar exercícios únicos:", err);
+    res.status(500).json({ error: "Erro ao buscar exercícios únicos" });
   }
 };
 
 module.exports = {
-  getFrequenciaTreino,
-  getVolumeTotal,
   getProgressoCarga,
-  getTempoTotal,
-  getDistribuicaoExercicios,
-  getComparativoExercicios,
+  getVolumeTotal,
+  getExerciciosUnicos,
 };
