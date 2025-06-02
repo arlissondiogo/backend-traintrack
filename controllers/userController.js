@@ -66,16 +66,20 @@ exports.login = async (req, res) => {
   }
 };
 
+const Workout = require("../models/Workout");
+
 exports.deleteUser = async (req, res) => {
   try {
-    const { id } = req.params;
+    const userId = req.userId;
 
-    const user = await User.findById(id);
+    const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ erro: "Usuário não encontrado." });
     }
 
-    await User.findByIdAndDelete(id);
+    await Workout.deleteMany({ user: userId });
+
+    await User.findByIdAndDelete(userId);
 
     res.status(200).json({ mensagem: "Usuário deletado com sucesso." });
   } catch (error) {
@@ -130,7 +134,7 @@ exports.forgotPassword = async (req, res) => {
     }
 
     const token = crypto.randomBytes(32).toString("hex");
-    const tokenExpiration = Date.now() + 3600000; // 1 hora
+    const tokenExpiration = Date.now() + 3600000;
 
     user.resetToken = token;
     user.tokenExpiration = tokenExpiration;
