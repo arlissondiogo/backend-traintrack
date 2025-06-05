@@ -34,13 +34,23 @@ exports.addWorkout = async (req, res) => {
 
 exports.listWorkouts = async (req, res) => {
   try {
+    const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 5;
+    const skip = (page - 1) * limit;
 
-    const workouts = await Workout.find({ user: req.userId }) // << pegar treinos só do usuário logado
+    const workouts = await Workout.find({ user: req.userId })
       .sort({ createdAt: -1 })
+      .skip(skip)
       .limit(limit);
 
-    res.status(200).json(workouts);
+    const total = await Workout.countDocuments({ user: req.userId });
+
+    res.status(200).json({
+      workouts,
+      total,
+      page,
+      pages: Math.ceil(total / limit),
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ erro: "Erro ao buscar treinos." });
