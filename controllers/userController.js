@@ -87,20 +87,60 @@ exports.deleteUser = async (req, res) => {
   }
 };
 
+exports.getUser = async (req, res) => {
+  try {
+    const userId = req.userId;
+
+    const user = await User.findById(userId).select(
+      "-senha -resetToken -tokenExpiration"
+    );
+
+    if (!user) {
+      return res.status(404).json({ erro: "Usuário não encontrado." });
+    }
+
+    res.status(200).json({
+      usuario: {
+        _id: user._id,
+        nome: user.nome,
+        email: user.email,
+        peso: user.peso,
+        altura: user.altura,
+        idade: user.idade,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ erro: "Erro ao buscar usuário." });
+  }
+};
+
 exports.updateUser = async (req, res) => {
   try {
-    const { id } = req.params;
+    const userId = req.userId;
     const { nome, email, peso, altura, idade, senha } = req.body;
 
-    let updateData = { nome, email, peso, altura, idade };
+    console.log("Dados recebidos:", { nome, email, peso, altura, idade });
+    console.log("UserId:", userId);
+
+    let updateData = {};
+
+    if (nome !== undefined) updateData.nome = nome;
+    if (email !== undefined) updateData.email = email;
+    if (peso !== undefined) updateData.peso = peso;
+    if (altura !== undefined) updateData.altura = altura;
+    if (idade !== undefined) updateData.idade = idade;
 
     if (senha) {
       const senhaCriptografada = await bcrypt.hash(senha, 10);
       updateData.senha = senhaCriptografada;
     }
 
-    const updatedUser = await User.findByIdAndUpdate(id, updateData, {
+    console.log("Dados para atualizar:", updateData);
+
+    const updatedUser = await User.findByIdAndUpdate(userId, updateData, {
       new: true,
+      runValidators: true,
     });
 
     if (!updatedUser) {
@@ -116,11 +156,13 @@ exports.updateUser = async (req, res) => {
         peso: updatedUser.peso,
         altura: updatedUser.altura,
         idade: updatedUser.idade,
-        __v: updatedUser.__v,
       },
     });
   } catch (error) {
-    res.status(500).json({ erro: "Erro ao atualizar usuário." });
+    console.error("Erro no updateUser:", error);
+    res
+      .status(500)
+      .json({ erro: "Erro ao atualizar usuário.", detalhes: error.message });
   }
 };
 
