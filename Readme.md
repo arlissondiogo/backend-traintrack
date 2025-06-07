@@ -9,7 +9,7 @@
 
 ## 📋 Sobre o Projeto
 
-TrainTrack é uma API RESTful desenvolvida em Node.js que permite aos usuários gerenciar seus treinos, acompanhar progressos e analisar dados de performance física. A aplicação oferece autenticação segura, recuperação de senha por email e relatórios detalhados de progresso.
+TrainTrack é uma API REST desenvolvida em Node.js que permite aos usuários gerenciar seus treinos, acompanhar progressos e analisar dados de performance física. A aplicação oferece autenticação segura, recuperação de senha por email e relatórios detalhados de progresso.
 
 🎨 Frontend: O frontend desta aplicação está disponível em [TrainTrack Frontend](https://github.com/arlissondiogo/frontend-traintrack.git)
 
