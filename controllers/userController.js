@@ -182,7 +182,7 @@ exports.forgotPassword = async (req, res) => {
     user.tokenExpiration = tokenExpiration;
     await user.save();
 
-    const resetLink = `http://localhost:5173/reset-password?token=${token}`;
+    const resetLink = `https://frontend-traintrack.vercel.app/reset-password?token=${token}`;
 
     await sendEmail(
       user.email,
